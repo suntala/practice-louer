@@ -1,0 +1,39 @@
+{
+  "name": "practice-deutsch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava --verbose",
+    "nyc": "nyc ava --verbose",
+    "test-watch": "ava --verbose --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suntala/practice-deutsch.git"
+  },
+  "author": "Arati R.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/suntala/practice-deutsch/issues"
+  },
+  "homepage": "https://github.com/suntala/practice-deutsch#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "fs": "0.0.1-security",
+    "mongoose": "^5.0.0-rc2",
+    "mongoose-sequence": "^4.0.1",
+    "pug": "^2.0.0-rc.4"
+  },
+  "devDependencies": {
+    "ava": "^0.24.0",
+    "nyc": "^11.4.1",
+    "supertest": "^3.0.0"
+  },
+  "ava": {
+    "files": [
+      "test/**/*.js"
+    ]
+  }
+}
