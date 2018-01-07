@@ -1,0 +1,51 @@
+AXIOS COMMANDS
+axios.post('/', {name:'Bran', money: 1000000, properties: []}).then(res => console.log(res.data))
+axios.post('/', {name:'Amia', money: 20000, properties: []}).then(res => console.log(res.data))
+
+after changing routes
+axios.post('/landlord/add', {name:'Chaf', money: 50000, properties: []}).then(res => console.log(res.data))
+
+
+
+
+(this is when i changed the format of post....)
+//axios.post('/', {landlordID:4, name: "Aminia", money: 20000, properties: ["Marina Sands"]}).then(res => console.log(res.data))
+//axios.post('/', {landlordID: 4, data: {name: "Aminia", money: 20000, properties: ["Marina Sands"]}}).then(res => console.log(res.data))
+axios.post('/', {landlordID: 1, name: "Amelie", money: 35000, properties: ["Marina Sands"]}).then(res => console.log(res.data))
+
+after changing routes
+axios.post('/landlord/edit', {landlordID: 3, name:'Uli', money: 50000, properties: []}).then(res => console.log(res.data))
+axios.post('/landlord/edit', {landlordID: 4, name:'Chafa', money: 50000, properties: []}).then(res => console.log(res.data))
+
+axios.post('/landlord/pay-rent', {landlordID: 4, name:'Chafa', money: 50000, properties: []}).then(res => console.log(res.data))
+
+
+
+
+axios.post('/renter/add', {name:'Homer', money: 50000, months: [], property: []}).then(res => console.log(res.data))
+axios.post('/property/add', {name:'Empire State', cost: 10000}).then(res => console.log(res.data))
+
+axios.post('/landlord/pay-rent', {landlordID: 2, renterID: 1, propertyID: 1}).then(res => console.log(res.data))
+
+
+//axios.post('/landlord/delete', {id: 4}).then(res => console.log(res.data))
+axios.post('/landlord/delete', {landlordID: 4}).then(res => console.log(res.data))
+
+
+
+axios.post('/landlord/sell-property', {landlordID1: 1, landlordID2: 2, propertyID: 1}).then(res => console.log(res.data))
+
+
+axios.post('/landlord/add-property', {landlordID: 2, propertyID: 1, payment: 0}).then(res => console.log(res.data))
+
+
+
+
+
+- - - - - 
+LOCAL HOST address:
+localhost:3000
+
+- - - - - - -
+
+when posting axios, I guess I have to put the full path (unlike what I have in routes...)

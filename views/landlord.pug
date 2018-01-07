@@ -1,0 +1,19 @@
+extends layout
+
+block content
+    h1 Landlords
+    if landlords.length
+        table
+            thead   
+                tr
+                    th Name
+                    th Money
+                    th Properties
+            tbody
+                each landlord in landlords
+                    tr
+                        td #{landlord.name}
+                        td #{landlord.money}
+                        td #{landlord.properties}
+    else
+        p There are currently no landlords registered.
