@@ -11,12 +11,22 @@ const add = (landlord) => {
 
 const edit = async (landlordID, data) => {
     const landlord = await LandlordModel.findOne({ landlordID })
-    landlord.name = data.name     
-    landlord.money = data.money
-    landlord.properties = data.properties
+    if (typeof data.name !== 'undefined'){ landlord.name = data.name }     
+    if (typeof data.money !== 'undefined'){ landlord.money = data.money }
+    if (typeof data.properties !== 'undefined'){ landlord.properties = data.properties }
     const newLandlord = await landlord.save();
     return newLandlord;
 }
+
+
+// const edit = async (landlordID, data) => {
+//     const landlord = await LandlordModel.findOne({ landlordID })
+//     landlord.name = data.name     
+//     landlord.money = data.money
+//     landlord.properties = data.properties
+//     const newLandlord = await landlord.save();
+//     return newLandlord;
+// }
 
 const del = (landlordID) => {
     return LandlordModel.remove({ landlordID })
@@ -67,7 +77,7 @@ const removeProperty = async (landlord, property, payment) => {
     const newLandlord = await edit(landlord.landlordID, {name: landlord.name, money: landlord.money + payment, properties: newProperties})
     return newLandlord
 }
-
+//have this used with IDs and not the full data
 
 // const removeProperty = async (landlord, property, payment) => {
 //     let theOneIndex;

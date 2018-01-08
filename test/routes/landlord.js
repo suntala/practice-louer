@@ -242,3 +242,24 @@ test('Pay rent', async t=> {
     
     t.is(res.status, 200)
 })
+
+test('Editing a landlord but not really', async t => {
+    const input = {name:'Test', money: 50, properties: []}
+
+    const creation = (await request(app)
+        .post('/landlord/add')
+        .send(input))
+        .body
+    
+    console.log(creation)
+    
+    const res = await request(app)
+        .post('/landlord/edit')
+        // .send(creation.landlordID)
+        .send({landlordID: creation.landlordID})
+
+    t.is(res.status, 200)
+    t.is(res.body.name, input.name)
+    t.is(res.body.money, input.money)
+    t.deepEqual(res.body.properties, input.properties)
+})
