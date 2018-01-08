@@ -2,11 +2,11 @@ import test from 'ava'
 import request from 'supertest'
 import app from '../../app'
 
-const LandlordModel = require('../../models/landlord-model')   //change to whatever model name you have
-const RenterModel = require('../../models/renter-model')  
-const PropertyModel = require('../../models/property-model') 
-const RenterService = require('../../services/renter-service') //format?
-const LandlordService = require('../../services/landlord-service')
+// const LandlordModel = require('../../models/landlord-model')   //change to whatever model name you have
+// const RenterModel = require('../../models/renter-model')  
+// const PropertyModel = require('../../models/property-model') 
+// const RenterService = require('../../services/renter-service') //format?
+// const LandlordService = require('../../services/landlord-service')
 
 test('Get landlord page', async t => {
     const input = {name:'Test', money: 50, properties: []}
