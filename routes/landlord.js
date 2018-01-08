@@ -46,6 +46,11 @@ router.post('/add-property', async (req, res, next) => {
     res.send(newDetails)
 })
 
+router.post('/remove-property', async (req, res, next) => {
+    const newDetails = await LandlordService.removeProperty(req.body.landlord, req.body.property, req.body.payment)
+    res.send(newDetails)
+})
+
 router.post('/delete', async (req, res, next) => {
     const landlord = await LandlordService.del(req.body.landlordID)
     res.send(landlord)

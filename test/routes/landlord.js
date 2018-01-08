@@ -118,6 +118,60 @@ test('Add property by ID', async t => {
 
 
 
+test('Remove property', async t => {
+    const inputLandlord = {name:'TestLLR', money: 500, properties: []} 
+    const inputProperty = {name:'TestP', cost: 10}
+ 
+    const landlordCreation = (await request(app)
+        .post('/landlord/add')
+        .send(inputLandlord))
+        .body
+
+    const propertyCreation = (await request(app)
+        .post('/property/add')
+        .send(inputProperty))
+        .body
+
+    const inputAdding = {landlordID: landlordCreation.landlordID, propertyID: propertyCreation.propertyID, payment: 0}
+
+    const sellerWithProperty = (await request(app)
+        .post('/landlord/add-property')
+        .send(inputAdding))
+        .body
+    
+    t.is(sellerWithProperty.properties.length, 1)
+
+    const input = {landlord: sellerWithProperty, property: propertyCreation, payment: 0}
+
+    const res = await request(app)
+        .post('/landlord/remove-property')
+        .send(input)
+
+    const newLandlord = {landlordID: sellerWithProperty.landlordID, name: sellerWithProperty.name, money: (sellerWithProperty.money + input.payment), properties: []}
+
+    // console.log(sellerWithProperty.properties)
+
+    // const theOneIndex = []
+    // for (let i = 0; i < sellerWithProperty.properties.length; i++) {
+    //     if (sellerWithProperty.properties[i].name == propertyCreation.name) {
+    //         theOneIndex.push(i)
+    //     }
+    // }
+    // const newProperties = sellerWithProperty.properties.splice(theOneIndex[0], 1)
+    // // console.log(theOneIndex[0])
+
+    // console.log(sellerWithProperty.properties)
+
+    // console.log(res.body)
+
+
+    // console.log(newLandlord)
+    t.is(res.status, 200)
+    // t.is(res.body, newLandlord)   <--will this never work because the object stored via MongoDB has the extra _id and _v fields?
+    t.is(res.body.money, newLandlord.money)
+    t.is(res.body.properties.length, newLandlord.properties.length)
+    // t.is(res.body.properties[0].name, newLandlord.properties[0].name)
+})
 
 
 test('Property sale', async t => {
@@ -154,8 +208,8 @@ test('Property sale', async t => {
         .post('/landlord/sell-property')
         .send(input)
     
-    console.log(res.body)
-    console.log(res.body[1].properties)
+    // console.log(res.body)
+    // console.log(res.body[1].properties)
 
     const newBuyer = {name:'TestLL', money: 380, properties: [{name:'TestP', cost: 10}]} 
     const newSeller = {name:'TestR', money: 1020, properties: []} 
@@ -187,3 +241,80 @@ test('Property sale', async t => {
 
 // [ { name: 'TestLL', money: 380, properties: [ 'House' ] },
 //   { name: 'TestR', money: 1020, properties: [] } ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+// test('Remove property', async t => {
+//     const inputLandlord = {name:'TestLLR', money: 500, properties: []} 
+//     const inputProperty = {name:'TestP', cost: 10}
+ 
+//     const landlordCreation = (await request(app)
+//         .post('/landlord/add')
+//         .send(inputLandlord))
+//         .body
+
+//     const propertyCreation = (await request(app)
+//         .post('/property/add')
+//         .send(inputProperty))
+//         .body
+
+//     const inputAdding = {landlordID: landlordCreation.landlordID, propertyID: propertyCreation.propertyID, payment: 0}
+
+//     const sellerWithProperty = (await request(app)
+//         .post('/landlord/add-property')
+//         .send(inputAdding))
+//         .body
+
+//     // console.log(sellerWithProperty.body) 
+
+//     const input = {landlord: sellerWithProperty, property: propertyCreation, payment: 0}
+
+//     // console.log(input)
+
+//     const res = await request(app)
+//         .post('/landlord/remove-property')
+//         .send(input)
+    
+//     // console.log(res.body)
+//     // res.body.properties.indexOf(input.property)
+//     // console.log(res.body.properties.indexOf(input.property))
+//     // console.log(res.body.properties)
+//     // console.log(input.property)
+
+//     // console.log(res.body.properties.indexOf(input.property))
+//     // console.log(res.body.properties)
+//     // console.log(input.property)
+
+//     // let a = [ { _id: '5a537791c1db66169c5d364b', name: 'TestP', cost: 10, propertyID: 164, __v: 0 } ]
+
+
+//     // let b = { _id: '5a537791c1db66169c5d364b', name: 'TestP', cost: 10, propertyID: 164, __v: 0 }
+
+//     // console.log(a.indexOf(b))
+
+
+
+//     // res.body.properties.splice(0, 1)
+//     // console.log(res.body)
+
+
+//     // const newLandlord = {landlordID: landlordCreation.landlordID, name: landlordCreation.name, money: (landlordCreation.money + input.payment), properties: [{propertyID: propertyCreation.propertyID, name:'TestP', cost: 10}]}
+
+//     // console.log(newLandlord)
+//     t.is(res.status, 200)
+//     // t.is(res.body, newLandlord)   <--will this never work because the object stored via MongoDB has the extra _id and _v fields?
+//     // t.is(res.body.money, newLandlord.money)
+//     // t.is(res.body.properties.length, newLandlord.properties.length)
+//     // t.is(res.body.properties[0].name, newLandlord.properties[0].name)
+// })
+

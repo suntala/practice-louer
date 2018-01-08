@@ -76,12 +76,37 @@ const addPropertyByID = async (landlordID, propertyID, payment) => {
 const removeProperty = async (landlord, property, payment) => {
     // const property = await PropertyModel.findOne({ propertyID })
     // const landlord = await find(landlordID)
-    const propertyIndex = landlord.properties.indexOf(property)
-    const newProperties = landlord.properties.splice(propertyIndex, 1)
+    const theOneIndex = []
+    for (let i = 0; i < landlord.properties.length; i++) {
+        if (landlord.properties[i].name == property.name) {
+            theOneIndex.push(i)
+        }
+    }
+    // const propertyIndex = landlord.properties.indexOf(property)
+    // const newProperties = landlord.properties.splice(theOneIndex[0], 1)
+    landlord.properties.splice(theOneIndex[0], 1)
+    const newProperties = landlord.properties
     // console.log(newProperties)
     const newLandlord = await edit(landlord.landlordID, {name: landlord.name, money: landlord.money + payment, properties: newProperties})
     return newLandlord
 }
+
+// const removeProperty = async (landlord, property, payment) => {
+//     // const property = await PropertyModel.findOne({ propertyID })
+//     // const landlord = await find(landlordID)
+//     const theOneIndex = []
+//     for (let i = 0; i < landlord.properties.length; i++) {
+//         if (landlord.properties[i].name == property.name) {
+//             theOneIndex.push(i)
+//         }
+//     }
+//     const propertyIndex = landlord.properties.indexOf(property)
+//     const newProperties = landlord.properties.splice(propertyIndex, 1)
+//     // console.log(newProperties)
+//     const newLandlord = await edit(landlord.landlordID, {name: landlord.name, money: landlord.money + payment, properties: newProperties})
+//     return newLandlord
+// }
+
 
 const sellingProperty = async (landlordID1, landlordID2, propertyID) => {
     const buyer = await find(landlordID1);
@@ -141,5 +166,6 @@ module.exports = {
     findAll,
     payRent, 
     addPropertyByID,
-    sellingProperty
+    sellingProperty,
+    removeProperty
 }
