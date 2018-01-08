@@ -18,7 +18,6 @@ test('Add a renter', async t => {
 
 test('Edit a renter', async t => {
     const input = {name:'Tester', money: 50, months: ['Jan'], property: ["House"]}
-    // const newInput = {name:'Tester', money: 50, months: ['NewMonth'], property: ["House"]}
 
     const creation = (await request(app)
         .post('/renter/add')
@@ -27,20 +26,11 @@ test('Edit a renter', async t => {
         //why do i have to put body here?  
         // is it related to why i don't have to put creation.body.renterID?
     
-    // console.log(creation)
-
-    // const newInput = (`${creation.renterID}`, {name:'Tester', money: 50, months: ['NewMonth'], property: ["House"]})
     const newInput = {renterID: creation.renterID, data: {name:'Tester', money: 50, months: ['NewMonth'], property: ["House"]}}
-
-    // console.log(newInput.data)
 
     const res = await request(app)
         .post('/renter/edit')
-        // .send(`${creation.renterID}`, newInput)
         .send(newInput)
-        // .send(newInput)
-
-    // console.log(res.body)
 
     t.is(res.status, 200)
     t.is(res.body.name, newInput.data.name)
@@ -57,8 +47,6 @@ test('Delete a renter', async t => {
         .send(input))
         .body
     
-    // console.log(creation)
-
     const del = await request(app)
         .post('/renter/delete')
         .send(creation)
@@ -68,16 +56,3 @@ test('Delete a renter', async t => {
 
     t.is(del.status, 200)
 })
-
-
-// test('Add a renter', async t => {
-//     const input = {name:'Test', cost: 10}
-
-//     const res = await request(app)
-//         .post('/property/add')
-//         .send(input)
-    
-//     t.is(res.status, 200)
-//     t.is(res.body.name, input.name)
-//     t.is(res.body.cost, input.cost)
-// })
