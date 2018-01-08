@@ -8,21 +8,21 @@ router.get('/', async (req, res, next) => {
     res.render('landlord', { landlords })
 });
 
-router.get('/add', async (req, res, next) => {
-    res.render('landlord')
-});   //so the posting i was doing worked without all this stuff, maybe don't need to get random pages for nothing
+// router.get('/add', async (req, res, next) => {
+//     res.render('landlord')
+// });   //so the posting i was doing worked without all this stuff, maybe don't need to get random pages for nothing
 
 // router.get('/edit', async (req, res, next) => {
 //     res.render('landlord')
 // });
 
-router.get('/pay-rent', async (req, res, next) => {
-    res.render('landlord')
-});
+// router.get('/pay-rent', async (req, res, next) => {
+//     res.render('landlord')
+// });
 
 router.get('/:landlordID', async (req, res, next) => {
     const landlord = await LandlordService.find(req.params.landlordID) 
-    console.log(landlord)
+    // console.log(landlord)
     res.render('indiv-landlord', {landlord})
 });
 

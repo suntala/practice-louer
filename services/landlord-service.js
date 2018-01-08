@@ -68,7 +68,7 @@ const addPropertyByID = async (landlordID, propertyID, payment) => {
     // console.log(newProperties)
     landlord.properties.push(property)
     const newProperties = landlord.properties
-    console.log(newProperties)
+    // console.log(newProperties)
     const newLandlord = await edit(landlordID, {name: landlord.name, money: landlord.money - payment, properties: newProperties})
     return newLandlord
 }
@@ -78,7 +78,7 @@ const removeProperty = async (landlord, property, payment) => {
     // const landlord = await find(landlordID)
     const propertyIndex = landlord.properties.indexOf(property)
     const newProperties = landlord.properties.splice(propertyIndex, 1)
-    console.log(newProperties)
+    // console.log(newProperties)
     const newLandlord = await edit(landlord.landlordID, {name: landlord.name, money: landlord.money + payment, properties: newProperties})
     return newLandlord
 }

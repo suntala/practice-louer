@@ -12,4 +12,9 @@ router.post('/delete', async (req, res, next) => {
     res.send(renter)
 })
 
+router.post('/edit', async (req, res, next) => {
+    const renter = await RenterService.edit(req.body.renterID, req.body.data)
+    res.send(renter)
+})
+
 module.exports = router;
