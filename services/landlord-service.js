@@ -5,7 +5,7 @@ const PropertyModel = require('../models/property-model')
 const RenterService = require('./renter-service') //format?
 
 
-const add = async (landlord) => {
+const add = (landlord) => {
     return LandlordModel.create(landlord)
 }
 
@@ -18,17 +18,17 @@ const edit = async (landlordID, data) => {
     return newLandlord;
 }
 
-const del = async (landlordID) => {
+const del = (landlordID) => {
     return LandlordModel.remove({ landlordID })
 }
 
 
 
-const find = async (landlordID) => {
+const find = (landlordID) => {
     return LandlordModel.findOne({ landlordID })
 }
 
-const findAll = async () => {
+const findAll = () => {
     return LandlordModel.find()
 }
 
@@ -61,17 +61,28 @@ const addPropertyByID = async (landlordID, propertyID, payment) => {
 }
 
 const removeProperty = async (landlord, property, payment) => {
-    const theOneIndex = []
-    for (let i = 0; i < landlord.properties.length; i++) {
-        if (landlord.properties[i].name == property.name) {
-            theOneIndex.push(i)
-        }
-    }
-    landlord.properties.splice(theOneIndex[0], 1)
+    const theOneIndex = landlord.properties.findIndex(prop => prop.name == property.name)
+    landlord.properties.splice(theOneIndex, 1)
     const newProperties = landlord.properties
     const newLandlord = await edit(landlord.landlordID, {name: landlord.name, money: landlord.money + payment, properties: newProperties})
     return newLandlord
 }
+
+
+// const removeProperty = async (landlord, property, payment) => {
+//     let theOneIndex;
+//     for (let i = 0; i < landlord.properties.length; i++) {
+//         if (landlord.properties[i].name == property.name) {
+//             theOneIndex = i
+//             break
+//         }
+//     }
+//     landlord.properties.splice(theOneIndex[0], 1)
+//     const newProperties = landlord.properties
+//     const newLandlord = await edit(landlord.landlordID, {name: landlord.name, money: landlord.money + payment, properties: newProperties})
+//     return newLandlord
+// }
+
 
 
 

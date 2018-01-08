@@ -1,7 +1,7 @@
 const fs = require('fs')
 const RenterModel = require('../models/renter-model')   //change to whatever model name you have
 
-const add = async (renter) => {
+const add = (renter) => {
     return RenterModel.create(renter)
 }
 
@@ -15,7 +15,7 @@ const edit = async (renterID, data) => {
     return newRenter;
 }
 
-const del = async (renterID) => {
+const del = (renterID) => {
     return RenterModel.remove({ renterID })
 }
 
