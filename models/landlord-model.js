@@ -10,7 +10,15 @@ const LandlordSchema = mongoose.Schema({
     money: {
         type: Number
     },
-    properties: []
+    properties: [{
+        name: {
+            type: String,
+            required: true
+        },
+        cost: {
+            type: Number
+        }        
+    }]
 })
 
 

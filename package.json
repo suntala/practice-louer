@@ -1,5 +1,5 @@
 {
-  "name": "practice-deutsch",
+  "name": "louer",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/suntala/practice-deutsch.git"
+    "url": "git+https://github.com/suntala/practice-louer"
   },
   "author": "Arati R.",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/suntala/practice-deutsch/issues"
+    "url": "https://github.com/suntala/practice-louer/issues"
   },
-  "homepage": "https://github.com/suntala/practice-deutsch#readme",
+  "homepage": "https://github.com/suntala/practice-louer#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.2",

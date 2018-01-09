@@ -11,6 +11,10 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:landlordID', async (req, res, next) => {
     const landlord = await LandlordService.find(req.params.landlordID) 
+    if(!landlord){
+        res.sendStatus(404);
+        return
+    }
     res.render('indiv-landlord', {landlord})
 });
 
@@ -31,16 +35,12 @@ router.post('/add-property', async (req, res, next) => {
     res.send(newDetails)
 })
 
-router.post('/remove-property', async (req, res, next) => {
-    const newDetails = await LandlordService.removeProperty(req.body.landlord, req.body.property, req.body.payment)
-    res.send(newDetails)
-})
-
 router.post('/delete', async (req, res, next) => {
-    const landlord = await LandlordService.del(req.body.landlordID)
+    //maybe figure out how to get the proper details of the deleted person...
+    const landlord = await LandlordService.find(req.body.landlordID)
+    await LandlordService.del(req.body.landlordID)
     res.send(landlord)
 })
-//maybe figure out how to get the proper details of the deleted person...
 //why didn't this work with del(req.body) and then in axios put the straight id, no curly brackets...?
 
 
