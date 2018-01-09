@@ -3,42 +3,24 @@ import request from 'supertest'
 import app from '../../app'
 
 
-test('Get landlord page', async t => {
-    const input = {name:'Test', money: 50, properties: []}
-
-    const landlord = (await request(app)
-        .post('/landlord/add')
-        .send(input))
-        .body  
+test('Get landlord page and add a landlord', async t => {
+    const name1 = 'Test ' + Math.random()
+    const name2 = 'Test ' + Math.random()
+    await request(app).post('/landlord/add')
+        .send({name: name1, money: 50, properties: []})
+    await request(app).post('/landlord/add')
+        .send({name: name2, money: 60, properties: []})
 
     const res = await request(app)
         .get('/landlord')
     
     t.is(res.status, 200)
-    t.regex(res.text, /Test/)
+    t.regex(res.text, new RegExp(name1))
+    t.regex(res.text, new RegExp(name2))
 })
-
-
-
-
-test('Add a landlord', async t => {
-    const input = {name:'Test', money: 50, properties: []}
-    // const input = [{name:'Test', money: 50, properties: []}]
-    //why did I have array brackets here?? and why doesn't it work without brackets??
-
-    const res = await request(app)
-        .post('/landlord/add')
-        .send(input)
-
-    t.is(res.status, 200)
-    t.is(res.body.name, input.name)
-    t.is(res.body.money, input.money)
-    t.deepEqual(res.body.properties, input.properties)
-})
-
 
 test('Get indiv landlord page', async t => {
-    const input = {name:'Test', money: 50, properties: []}
+    const input = {name:'Test ' + Math.random(), money: 50, properties: []}
 
     const landlord = (await request(app)
         .post('/landlord/add')
@@ -52,12 +34,12 @@ test('Get indiv landlord page', async t => {
         .get(`/landlord/${landlord.landlordID}`)
     
     t.is(res.status, 200)
-    t.regex(res.text, /Test/)
+    t.regex(res.text, new RegExp(input.name))
 })
 
 test('Add property by ID', async t => {
     const inputLandlord = {name:'TestLL', money: 500, properties: []} //buyer
-    const inputProperty = {name:'TestP', cost: 10}
+    const inputProperty = {name:'TestP ' + Math.random(), cost: 10}
  
     const landlordCreation = (await request(app)
         .post('/landlord/add')
@@ -69,63 +51,21 @@ test('Add property by ID', async t => {
         .send(inputProperty))
         .body
 
-    const input = {landlordID: landlordCreation.landlordID, propertyID: propertyCreation.propertyID, payment: 0}
-
     const res = await request(app)
         .post('/landlord/add-property')
-        .send(input)
+        .send({landlordID: landlordCreation.landlordID, propertyID: propertyCreation.propertyID, payment: 0})
     
-    const newLandlord = {landlordID: landlordCreation.landlordID, name: landlordCreation.name, money: (landlordCreation.money + input.payment), properties: [{propertyID: propertyCreation.propertyID, name:'TestP', cost: 10}]}
-
     t.is(res.status, 200)
     // t.is(res.body, newLandlord)   <--will this never work because the object stored via MongoDB has the extra _id and _v fields?
-    t.is(res.body.money, newLandlord.money)
-    t.is(res.body.properties.length, newLandlord.properties.length)
-    t.is(res.body.properties[0].name, newLandlord.properties[0].name)
+    t.is(res.body.money, landlordCreation.money)
+    t.is(res.body.properties.length, 1)
+    t.is(res.body.properties[0].name, inputProperty.name)
 })
-
-test('Remove property', async t => {
-    const inputLandlord = {name:'TestLLR', money: 500, properties: []} 
-    const inputProperty = {name:'TestP', cost: 10}
- 
-    const landlordCreation = (await request(app)
-        .post('/landlord/add')
-        .send(inputLandlord))
-        .body
-
-    const propertyCreation = (await request(app)
-        .post('/property/add')
-        .send(inputProperty))
-        .body
-
-    const inputAdding = {landlordID: landlordCreation.landlordID, propertyID: propertyCreation.propertyID, payment: 0}
-
-    const sellerWithProperty = (await request(app)
-        .post('/landlord/add-property')
-        .send(inputAdding))
-        .body
-    
-    t.is(sellerWithProperty.properties.length, 1)
-
-    const input = {landlord: sellerWithProperty, property: propertyCreation, payment: 0}
-
-    const res = await request(app)
-        .post('/landlord/remove-property')
-        .send(input)
-
-    const newLandlord = {landlordID: sellerWithProperty.landlordID, name: sellerWithProperty.name, money: (sellerWithProperty.money + input.payment), properties: []}
-
-    t.is(res.status, 200)
-    // t.is(res.body, newLandlord)   <--will this never work because the object stored via MongoDB has the extra _id and _v fields?
-    t.is(res.body.money, newLandlord.money)
-    t.is(res.body.properties.length, newLandlord.properties.length)
-})
-
 
 test('Property sale', async t => {
     const buyer = {name:'TestB', money: 500, properties: []} //buyer
     const seller = {name:'TestS', money: 900, properties: []}
-    const inputProperty = {name:'TestP', cost: 10}
+    const inputProperty = {name:'TestP ' + Math.random(), cost: 10}
  
     const buyerCreation = (await request(app)
         .post('/landlord/add')
@@ -142,26 +82,22 @@ test('Property sale', async t => {
         .send(inputProperty))
         .body
     
-    const inputAdding = {landlordID: sellerCreation.landlordID, propertyID: propertyCreation.propertyID, payment: 0}
-
     const sellerWithProperty = await request(app)
         .post('/landlord/add-property')
-        .send(inputAdding)
+        .send({landlordID: sellerCreation.landlordID, propertyID: propertyCreation.propertyID, payment: 0})
     
-    const input = {landlordID1: buyerCreation.landlordID, landlordID2: sellerCreation.landlordID, propertyID: propertyCreation.propertyID}
-
     const res = await request(app)
         .post('/landlord/sell-property')
-        .send(input)
+        .send({landlordID1: buyerCreation.landlordID, landlordID2: sellerCreation.landlordID, propertyID: propertyCreation.propertyID})
 
-    const newBuyer = {name:'TestLL', money: 380, properties: [{name:'TestP', cost: 10}]} 
-    const newSeller = {name:'TestR', money: 1020, properties: []} 
+    const [newBuyer, newSeller] = res.body
 
     t.is(res.status, 200)
-    t.is(res.body[0].money, 380)
-    t.is(res.body[1].money, 1020)
-    t.is(res.body[0].properties.length, 1)
-    t.is(res.body[1].properties.length, 0)  //fix this
+    t.is(newBuyer.money, 380)
+    t.is(newBuyer.properties.length, 1)
+    t.is(newBuyer.properties[0].name, inputProperty.name)
+    t.is(newSeller.money, 1020)
+    t.is(newSeller.properties.length, 0)  //fix this
 })
 
 //////// BEFORE ///////////////////
@@ -190,27 +126,14 @@ test('Delete a landlord', async t => {
         .send(input))
         .body
 
-    // const fetch = await request(app)
-    //     .get(`/landlord/${creation.landlordID}`)
+    const landlordDetailBefore = await request(app).get(`/landlord/${creation.landlordID}`)
+    t.is(landlordDetailBefore.status, 200)
     
-    // t.is(fetch.status, 200)
-
-    const res = await request(app)
-        .post('/landlord/delete')
-        .send(creation)
-
+    const res = await request(app).post('/landlord/delete').send(creation)
     t.is(res.status, 200)
 
-    // const fetch = await request(app)
-    //     .get(`/landlord/${creation.landlordID}`)
-    
-    // t.is(fetch.status, 404)
-    /*
-    const fetch = await request(app)
-        .get(`/landlord/${creation.landlordID}`)
-
-    t.is(fetch.status, 404)   --> getting 500
-    */  
+    const landlordDetailAfter = await request(app).get(`/landlord/${creation.landlordID}`)
+    t.is(landlordDetailAfter.status, 404)
 })
 
 test('Pay rent', async t=> {
@@ -218,27 +141,12 @@ test('Pay rent', async t=> {
     const inputProperty = {name:'TestP', cost: 10}
     const inputRenter = {name:'TesterR', money: 50, months: ['Jan'], property: ["House"]}
  
-    const landlordCreation = (await request(app)
-        .post('/landlord/add')
-        .send(inputLandlord))
-        .body
-    
+    const landlordCreation = (await request(app).post('/landlord/add').send(inputLandlord)).body
+    const propertyCreation = (await request(app).post('/property/add').send(inputProperty)).body
+    const renterCreation = (await request(app).post('/renter/add').send(inputRenter)).body
 
-    const propertyCreation = (await request(app)
-        .post('/property/add')
-        .send(inputProperty))
-        .body
-    
-    const renterCreation = (await request(app)
-        .post('/renter/add')
-        .send(inputRenter))
-        .body
-
-    const input = {landlordID: landlordCreation.landlordID, renterID: renterCreation.renterID, propertyID: propertyCreation.propertyID}
-
-    const res = await request(app)
-        .post('/landlord/pay-rent')
-        .send(input)
+    const res = await request(app).post('/landlord/pay-rent')
+        .send({landlordID: landlordCreation.landlordID, renterID: renterCreation.renterID, propertyID: propertyCreation.propertyID})
     
     t.is(res.status, 200)
 })
@@ -251,7 +159,7 @@ test('Editing a landlord but not really', async t => {
         .send(input))
         .body
     
-    console.log(creation)
+    // console.log(creation)
     
     const res = await request(app)
         .post('/landlord/edit')
@@ -262,4 +170,20 @@ test('Editing a landlord but not really', async t => {
     t.is(res.body.name, input.name)
     t.is(res.body.money, input.money)
     t.deepEqual(res.body.properties, input.properties)
+})
+
+test('Editing a landlord', async t => {
+    const input = {name:'Test ' + Math.random(), money: Math.random() * 10, properties: []}
+
+    const creation = (await request(app).post('/landlord/add').send(input)).body
+
+    const updateData = {landlordID: creation.landlordID, name: 'Test ' + Math.random(), money : Math.random() * 10, properties: []}
+    const res = await request(app)
+        .post('/landlord/edit')
+        .send(updateData)
+
+    t.is(res.status, 200)
+    t.is(res.body.name, updateData.name)
+    t.is(res.body.money, updateData.money)
+    t.deepEqual(res.body.properties, updateData.properties)
 })

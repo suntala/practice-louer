@@ -47,34 +47,31 @@ const payRent = async (landlordID, renterID, propertyID) => {
     const landlord = await LandlordModel.findOne({ landlordID })
     const renter = await RenterModel.findOne({ renterID })
     const monthRent = property.cost
-    const newLandlordMoney = landlord.money + monthRent
-    const newRenterMoney = renter.money - monthRent
-    const newLandlord = await edit(landlordID, {name: landlord.name, money: newLandlordMoney, properties: landlord.properties})
-    const newRenter = await RenterService.edit(renterID, {name: renter.name, money: newRenterMoney, months: renter.months, property: renter.property})
+    landlord.money += monthRent    
+    renter.money -= monthRent
+    const newLandlord = await landlord.save()
+    const newRenter = await renter.save()
     return [newLandlord, newRenter]
 }
 
 const addProperty = async (landlord, property, payment) => {
     landlord.properties.push(property)
-    const newProperties = landlord.properties
-    const newLandlord = await edit(landlord.landlordID, {name: landlord.name, money: landlord.money - payment, properties: newProperties})
+    landlord.money -= payment
+    const newLandlord = await landlord.save()
     return newLandlord
 }
 
 const addPropertyByID = async (landlordID, propertyID, payment) => {
     const property = await PropertyModel.findOne({ propertyID })
     const landlord = await find(landlordID)
-    landlord.properties.push(property)
-    const newProperties = landlord.properties
-    const newLandlord = await edit(landlordID, {name: landlord.name, money: landlord.money - payment, properties: newProperties})
-    return newLandlord
+    return await addProperty(landlord, property, payment)
 }
 
 const removeProperty = async (landlord, property, payment) => {
     const theOneIndex = landlord.properties.findIndex(prop => prop.name == property.name)
     landlord.properties.splice(theOneIndex, 1)
-    const newProperties = landlord.properties
-    const newLandlord = await edit(landlord.landlordID, {name: landlord.name, money: landlord.money + payment, properties: newProperties})
+    landlord.money += payment
+    const newLandlord = await landlord.save()
     return newLandlord
 }
 //have this used with IDs and not the full data
@@ -116,6 +113,5 @@ module.exports = {
     findAll,
     payRent, 
     addPropertyByID,
-    sellingProperty,
-    removeProperty
+    sellingProperty
 }
